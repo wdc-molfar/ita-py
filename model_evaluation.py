@@ -20,15 +20,10 @@ def main(input_json):
     model_lang = input_json['model']['locale']       
     
     
-    if f'{model_name}_{model_lang}' in os.listdir('.'):
-        nlp = spacy.load(f'./{model_name}_{model_lang}')
-    else:
-        return
-        
-    if "ner" in nlp.pipe_names:
-        ner = nlp.get_pipe("ner")
-    else:
-        return
+    nlp = spacy.load(f'./{model_name}_{model_lang}')    
+            
+    ner = nlp.get_pipe("ner")
+    
           
             
     data = [[input_json['data'][i]['text'], {'entities': [[x['pos'][0], x['pos'][1]+1, x['type']] for x in input_json['data'][i]['entities']]}] for i in range(len(input_json['data']))]
@@ -60,10 +55,14 @@ if __name__=='__main__':
         
         try:
             output = main(input_json)
-        except Exception as e:
-            print(e)
-            output = input_json.copy()
-        
+        except BaseException as ex:            
+            ex_type, ex_value, ex_traceback = sys.exc_info()            
+            
+            output = {"result": {"error": ''}}           
+            output['result']['error'] += "Exception type : %s; " % ex_type.__name__
+            output['result']['error'] += "Exception message : %s" %ex_value
+            
+            
         output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
         sys.stdout.buffer.write(output_json)
         print()

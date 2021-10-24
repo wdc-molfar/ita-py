@@ -6,7 +6,7 @@ import spacy
 import random
 from spacy.util import minibatch, compounding
 import warnings
-
+import traceback
 
 
 warnings.filterwarnings("ignore", message=r"\[W033\]", category=UserWarning)
@@ -87,9 +87,13 @@ if __name__=='__main__':
                
         try:
             output = main(input_json)
-        except Exception as e:
-            print(e)
-            output = input_json.copy()
+        except BaseException as ex:
+            ex_type, ex_value, ex_traceback = sys.exc_info()            
+            
+            output = {"result": {"error": ''}}           
+            output['result']['error'] += "Exception type : %s; " % ex_type.__name__
+            output['result']['error'] += "Exception message : %s" %ex_value
+            
             
         
         output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
