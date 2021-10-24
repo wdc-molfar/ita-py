@@ -26,7 +26,7 @@ def main(input_json):
         nlp = spacy.load(f'./{model_name}_{model_lang}')
     else:
         nlp = spacy.blank(model_lang)
-        
+    
     if "ner" not in nlp.pipe_names:
         ner = nlp.create_pipe("ner")
         nlp.add_pipe(ner, last=True)
@@ -34,7 +34,7 @@ def main(input_json):
         ner = nlp.get_pipe("ner") 
     
     
-    [ner.add_label(x['type']) for x in input_json['data'][0]['entities']]
+    [[ner.add_label(x['type']) for x in input_json['data'][i]['entities']] for i in range(len(input_json['data']))]
     
     
     n_iter = 50
@@ -77,9 +77,20 @@ if __name__=='__main__':
     
     input_json = None
     for line in input_stream:
-        input_json = json.loads(line)    
         
-        output = main(input_json)
+        # read json from stdin
+        input_json = json.loads(line)
+        
+        # read file path with json - for debugging
+#         with open(line[:-1], 'r', encoding='utf-8') as f:
+#             input_json = json.loads(f.read())
+               
+        try:
+            output = main(input_json)
+        except Exception as e:
+            print(e)
+            output = input_json.copy()
+            
         
         output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
         sys.stdout.buffer.write(output_json)
