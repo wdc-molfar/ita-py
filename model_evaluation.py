@@ -58,9 +58,10 @@ if __name__=='__main__':
         except BaseException as ex:            
             ex_type, ex_value, ex_traceback = sys.exc_info()            
             
-            output = {"result": {"error": ''}}           
-            output['result']['error'] += "Exception type : %s; " % ex_type.__name__
-            output['result']['error'] += "Exception message : %s" %ex_value
+            output = {"error": ''}           
+            output['error'] += "Exception type : %s; \n" % ex_type.__name__
+            output['error'] += "Exception message : %s\n" %ex_value
+            output['error'] += "Exception traceback : %s\n" %"".join(traceback.TracebackException.from_exception(ex).format())
             
             
         output_json = json.dumps(output, ensure_ascii=False).encode('utf-8')
