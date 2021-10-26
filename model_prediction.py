@@ -4,6 +4,8 @@ import sys
 import json
 import spacy
 from collections import defaultdict
+import warnings
+import traceback
 
 
 input_stream = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
