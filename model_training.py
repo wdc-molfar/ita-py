@@ -20,10 +20,11 @@ def main(input_json):
         
     model_name = input_json['model']['name']
     model_lang = input_json['model']['locale']
+    workDir = input_json['workDir']
                           
         
     if f'{model_name}_{model_lang}' in os.listdir('.'):
-        nlp = spacy.load(f'./{model_name}_{model_lang}')
+        nlp = spacy.load(f'./{workDir}/{model_name}_{model_lang}')
     else:
         nlp = spacy.blank(model_lang)
     
@@ -65,7 +66,7 @@ def main(input_json):
                 )
             list_losses.append(losses['ner'])
     
-    nlp.to_disk(f"./{model_name}_{model_lang}")
+    nlp.to_disk(f"./{workDir}/{model_name}_{model_lang}")
     
     output_json['model']['losses'] = list_losses
     

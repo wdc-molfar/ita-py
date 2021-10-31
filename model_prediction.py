@@ -17,10 +17,10 @@ def main(input_json):
 
     model_name = input_json['model']['name']
     model_lang = input_json['model']['locale']
-
-
-    nlp = spacy.load(f'./{model_name}_{model_lang}')
-
+    workDir = input_json['workDir']
+    
+    nlp = spacy.load(f'./{workDir}/{model_name}_{model_lang}')    
+    
     ner = nlp.get_pipe("ner")
 
 
